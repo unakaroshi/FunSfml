@@ -40,6 +40,8 @@ public:
 
 		sf::Vector2f pos{ to.x - particle.getRadius(), to.y - particle.getRadius() };
 		particle.setPosition(pos);
+		particle.setMass(randomNumber.getNumber(10.0, 50.0));	
+
 
 		if ( level < maxlevel) {
 			addBranches();
@@ -61,29 +63,36 @@ public:
 		}
 	}
 
-
-	void applyWind(sf::Vector2f *wind = nullptr) {
-		if (wind) {
-			sf::Vector2f w(*wind);
-			sf::Vector2f w2(randomNumber.getNumber(-0.005f, 0.005f), 0.0);
-			w = w + w2;
-			particle.applyForce(w);
-			for (auto b : branches) {
-				b->applyWind(wind);
-			}
+	void reset() {
+		attached = true;
+		auto to = vertices[1].position;
+		sf::Vector2f pos{ to.x - particle.getRadius(), to.y - particle.getRadius() };
+		particle.setPosition(pos);
+		particle.setVelocity(sf::Vector2f(0.0, 0.0));
+		for (auto b : branches) {
+			b->reset();
 		}
-		else {
-		
-			sf::Vector2f w(randomNumber.getNumber(-0.0101f, 0.01f), 0.0);
-			particle.applyForce(w);
-			for (auto b : branches) {
-				b->applyWind(&w);
-			}
+	}
 
+
+	void applyWind(sf::Vector2f* wind = nullptr) {
+    if (attached || !wind) {
+      return;
+    }		
+    particle.applyWind(*wind);
+    for (auto b : branches) {
+      b->applyWind(wind);
+    }
+  }
+
+	void applyGravity(sf::Vector2f* gravity = nullptr) {
+		if (attached || !gravity) {
+			return;
+		}		
+		particle.applyWind(*gravity);
+		for (auto b : branches) {
+			b->applyWind(gravity);
 		}
-
-
-		
 	}
 
 	void incAngle() {
@@ -149,9 +158,7 @@ public:
 			particle.setPosition(pos);
 			initialized = true;
 		}
-		if (!attached) {
-			applyWind();
-		}
+		
 
 		particle.update();
 

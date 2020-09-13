@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Branch.h" />
+    <ClInclude Include="Degrees.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="KeyboardHandler.h" />
     <ClInclude Include="Particle.h" />

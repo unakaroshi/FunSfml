@@ -47,19 +47,18 @@ int main()
 
 	Branch branch(sf::Vector2f(900,1040), sf::Vector2f(900,700));
 
-
 	
 	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Escape, [&]() {window.close(); });
 	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Up, [&]() { branch.incAngle(); });
 	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Down, [&]() { branch.decAngle(); });
 	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Space, [&]() { branch.dropLeaves(); });
+	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Enter, [&]() { branch.reset(); });
 	
-
-
-
 	
 	sf::Color bgColor;
 	float color[3] = { 0.f, 0.f, 0.f };
+	float wind = 0.01;
+	float gravity = 0.01;
 
 
 	Planet sun(40, 0, 0, modes[0].width / 2, modes[0].height / 2);
@@ -122,6 +121,8 @@ int main()
 			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}
+		
+		ImGui::SliderFloat("Wind", &wind, -0.5, 0.5, "%.4f");
 		ImGui::End(); // end window
 
 
@@ -140,13 +141,22 @@ int main()
 		planetTransform.translate(pos);
 		planetTransform.scale(scale, scale, modes[0].width / 2, modes[0].height / 2);
 
-
 		
+
+
 		window.clear(bgColor);
 
 		sun.draw(window, planetTransform);
 
+		
+		sf::Vector2f windVec{ wind, 0.0 };
+		branch.applyWind(&windVec);
+
+		sf::Vector2f gravityVec{ 0.0f, gravity };
+		branch.applyGravity(&gravityVec);
+
 		branch.update();
+		
 		
 		branch.draw(window);
 		

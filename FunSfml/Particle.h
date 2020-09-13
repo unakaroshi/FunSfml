@@ -8,6 +8,7 @@ private:
   sf::Vector2f m_velocity{ 0,0 };
   sf::Vector2f m_acceleration{ 0,0 };
   sf::CircleShape m_shape;
+  float m_mass{ 1.0 };
 
 public:
   Particle(const sf::Vector2f& pos = { 0,0 }, float r = 6) {
@@ -15,8 +16,20 @@ public:
     m_shape.setRadius(r);
   }
 
+  void setVelocity(const sf::Vector2f& vel) {
+    m_velocity = vel;
+  }
+
   void setPosition(const sf::Vector2f& pos) {    
     m_shape.setPosition(pos);
+  }
+
+  void setMass(float m) {
+    m_mass = m;
+  }
+
+  float getMass() const {
+    return m_mass;
   }
 
   void setRadius(float r) {
@@ -25,6 +38,19 @@ public:
 
   float getRadius() const {
     return m_shape.getRadius();
+  }
+
+  void applyGravity(const sf::Vector2f& v) {
+    auto v2 = v * m_mass;
+    applyForce(v2);
+  }
+
+  void applyWind(const sf::Vector2f &v) {
+    if (m_mass == 0.0f) {
+      return;
+    }
+    auto v2 = v / m_mass;
+    applyForce(v2);
   }
 
   void applyForce(const sf::Vector2f &v) { 

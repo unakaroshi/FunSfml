@@ -41,5 +41,8 @@
     <ClInclude Include="KeyboardHandler.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Degrees.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
