@@ -10,21 +10,23 @@
 #include <random>
 #include <math.h>
 #include <iostream>
+#include "KeyboardHandler.h"
+#include "RandomNumberGenerator.h"
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include <SFML/Graphics.hpp>
 
+int main() 
+{
+	RandomNumberGenerator randomNumber;
+	CKeyboardHandler keyboardHandler;
 
-
-
-int main() {
 
 	sf::Vector2f velocity_sun(0.0, 0.0);
 
+
 	float scale = 1.0f;
-	std::default_random_engine defEngine;
-	std::uniform_real_distribution<float> floatDistro(0.0f, 360.0f);
-	std::uniform_real_distribution<float> floatDistro2(2.0f, 4.0f);
+	
+	
 
 	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
 	for (std::size_t i = 0; i < modes.size(); ++i)
@@ -35,29 +37,43 @@ int main() {
 			<< mode.bitsPerPixel << " bpp" << std::endl;
 	}
 	// Create a window with the same pixel depth as the desktop
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+	//sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+
+
+	sf::RenderWindow window(modes[0], "SFML window" /*, sf::Style::Fullscreen*/);
+
+	ImGui::SFML::Init(window);
+
+
+	Branch branch(sf::Vector2f(900,1040), sf::Vector2f(900,700));
+
 
 	
-	sf::RenderWindow window(modes[0], "SFML window" /*, sf::Style::Fullscreen*/);
+	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Escape, [&]() {window.close(); });
+	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Up, [&]() { branch.incAngle(); });
+	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Down, [&]() { branch.decAngle(); });
+	keyboardHandler.registerKeyBoardAction(sf::Keyboard::Space, [&]() { branch.dropLeaves(); });
 	
-	ImGui::SFML::Init(window);
+
+
+
 	
 	sf::Color bgColor;
 	float color[3] = { 0.f, 0.f, 0.f };
 
 
 	Planet sun(40, 0, 0, modes[0].width / 2, modes[0].height / 2);
-	Planet mercury(5, floatDistro(defEngine), 20);
-	Planet venus(8, floatDistro(defEngine), 50);
-	Planet earth(8, floatDistro(defEngine), 110);
-	Planet moon(3, floatDistro(defEngine), 10);
+	Planet mercury(5, randomNumber.getNumber(0.0, 360.0), 20);
+	Planet venus(8, randomNumber.getNumber(0.0, 360.0), 50);
+	Planet earth(8, randomNumber.getNumber(0.0, 360.0), 110);
+	Planet moon(3, randomNumber.getNumber(0.0, 360.0), 10);
 
 	earth.addPlanet(moon);
 	sun.addPlanet(mercury);
 	sun.addPlanet(venus);
 	sun.addPlanet(earth);
 
-	sf::Vector2f s(floatDistro2(defEngine), floatDistro2(defEngine));
+	sf::Vector2f s(randomNumber.getNumber(2.0, 4.0), randomNumber.getNumber(2.0, 4.0));
 
 
 
@@ -74,51 +90,31 @@ int main() {
 
 	// Here is our clock for timing everything
 	sf::Clock clock;
-	//sf::Clock deltaClock;
+	
 	window.setFramerateLimit(120);
 
-	sf::Vector2f from{ 900,1040 };
-	sf::Vector2f to{ 900,700 };
 
-	Branch branch(from, to);
 
 	while (window.isOpen()) {
 		sf::Event event;
-
 		while (window.pollEvent(event)) {
-			ImGui::SFML::ProcessEvent(event);
-			// Quit the game when the window is closed
+			ImGui::SFML::ProcessEvent(event);			
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
 		}
 
+		keyboardHandler.execute();
 
-
-
-		// Handle the player quitting
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-			window.close();
-		}
-
-		// Handle the pressing and releasing of the arrow keys
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			branch.incAngle();
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			branch.decAngle();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			branch.dropLeaves();
-		}
+		
 		// Update the delta time
 		sf::Time deltaTime = clock.restart();
 
 		ImGui::SFML::Update(window, deltaTime);
-		ImGui::Begin("Sample window"); // begin window
 
-																			 // Background color edit
+
+		ImGui::Begin("Properties"); // begin window
+		// Background color edit
 		if (ImGui::ColorEdit3("Background color", color)) {
 			// this code gets called if color value changes, so
 			// the background color is upgraded automatically!
@@ -143,6 +139,8 @@ int main() {
 		sf::Transform planetTransform = sf::Transform::Identity;
 		planetTransform.translate(pos);
 		planetTransform.scale(scale, scale, modes[0].width / 2, modes[0].height / 2);
+
+
 		
 		window.clear(bgColor);
 
@@ -151,7 +149,7 @@ int main() {
 		branch.update();
 		
 		branch.draw(window);
-		//window.draw(text);
+		
 
 		ImGui::SFML::Render(window);
 		

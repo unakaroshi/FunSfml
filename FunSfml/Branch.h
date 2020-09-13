@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
-#include <random>
+#include "RandomNumberGenerator.h"
 
 #include "Helper.h"
 #include "Particle.h"
@@ -16,12 +16,10 @@ private:
 	std::vector<Branch*> branches;
 	int lvl;
 	float angle = M_PI_4/2;
-	std::default_random_engine defEngine{};
-	const std::uniform_real_distribution<float> floatDistro1{ 0.4f, 1.0f };
-	const std::uniform_real_distribution<float> floatDistro2{ -0.1, 0.1f };
-	const std::uniform_real_distribution<float> floatDistro3{ -0.0101f, 0.01f };
-	const std::uniform_real_distribution<float> floatDistro4{ -0.005f, 0.005f };
 
+	RandomNumberGenerator randomNumber;
+	
+	
 	Particle particle;
 	bool attached = true;
 	bool initialized = false;
@@ -54,17 +52,20 @@ public:
 		}
 
 		attached = false;
-		sf::Vector2f force{ floatDistro2(defEngine), floatDistro1(defEngine) };
+		
+
+		sf::Vector2f force{ randomNumber.getNumber(-0.1f,0.1f), randomNumber.getNumber(0.4f, 1.0f)};
 		particle.applyForce(force);
 		for (auto b : branches) {
 			b->dropLeaves();
 		}
 	}
 
+
 	void applyWind(sf::Vector2f *wind = nullptr) {
 		if (wind) {
 			sf::Vector2f w(*wind);
-			sf::Vector2f w2(floatDistro4(defEngine), 0.0);
+			sf::Vector2f w2(randomNumber.getNumber(-0.005f, 0.005f), 0.0);
 			w = w + w2;
 			particle.applyForce(w);
 			for (auto b : branches) {
@@ -72,9 +73,8 @@ public:
 			}
 		}
 		else {
-			
-			
-			sf::Vector2f w(floatDistro3(defEngine), 0.0);
+		
+			sf::Vector2f w(randomNumber.getNumber(-0.0101f, 0.01f), 0.0);
 			particle.applyForce(w);
 			for (auto b : branches) {
 				b->applyWind(&w);

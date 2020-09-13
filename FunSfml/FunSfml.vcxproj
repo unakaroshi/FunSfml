@@ -154,8 +154,10 @@
   <ItemGroup>
     <ClInclude Include="Branch.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="KeyboardHandler.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Planet.h" />
+    <ClInclude Include="RandomNumberGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
