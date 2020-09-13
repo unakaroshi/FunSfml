@@ -5,8 +5,8 @@
 class RandomNumberGenerator
 {
 private:
-	std::default_random_engine defEngine{};
-
+	std::random_device r;
+	std::default_random_engine defEngine{r()};
 public:
 	RandomNumberGenerator() {}
 	~RandomNumberGenerator() = default;
