@@ -58,7 +58,8 @@ int main()
 	sf::Color bgColor;
 	float color[3] = { 0.f, 0.f, 0.f };
 	float wind = 0.01;
-	float gravity = 0.01;
+	float gravity = 1.0;
+	bool showSun = false;
 
 
 	Planet sun(40, 0, 0, modes[0].width / 2, modes[0].height / 2);
@@ -113,8 +114,10 @@ int main()
 
 
 		ImGui::Begin("Properties"); // begin window
+
+		ImGui::SetWindowSize(ImVec2(350.0, 150.0));
 		// Background color edit
-		if (ImGui::ColorEdit3("Background color", color)) {
+		if (ImGui::ColorEdit3("Background", color)) {
 			// this code gets called if color value changes, so
 			// the background color is upgraded automatically!
 			bgColor.r = static_cast<sf::Uint8>(color[0] * 255.f);
@@ -122,7 +125,9 @@ int main()
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}
 		
-		ImGui::SliderFloat("Wind", &wind, -0.5, 0.5, "%.4f");
+		ImGui::SliderFloat("Wind", &wind, -0.5f, 0.5f, "%.4f");
+		ImGui::SliderFloat("Gravity", &gravity, 0.001f, 20.0f, "%.4f");
+		ImGui::Checkbox("Show Sun", &showSun);
 		ImGui::End(); // end window
 
 
@@ -137,22 +142,23 @@ int main()
 		sf::Vector2f pos(std::sinf(M_2_PI * (velocity_sun.x / 360.0)) * 900, std::sinf(M_2_PI * (velocity_sun.y / 360.0)) * 500);
 
 
-		sf::Transform planetTransform = sf::Transform::Identity;
-		planetTransform.translate(pos);
-		planetTransform.scale(scale, scale, modes[0].width / 2, modes[0].height / 2);
-
 		
 
-
+		
 		window.clear(bgColor);
 
-		sun.draw(window, planetTransform);
-
+		if (showSun) {
+			sf::Transform planetTransform = sf::Transform::Identity;
+			planetTransform.translate(pos);
+			planetTransform.scale(scale, scale, modes[0].width / 2, modes[0].height / 2);
+			sun.draw(window, planetTransform);
+		}
+		
 		
 		sf::Vector2f windVec{ wind, 0.0 };
 		branch.applyWind(&windVec);
 
-		sf::Vector2f gravityVec{ 0.0f, gravity };
+		sf::Vector2f gravityVec{ 0.0f, gravity*0.1f };
 		branch.applyGravity(&gravityVec);
 
 		branch.update();

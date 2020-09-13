@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-
+	
 	void applyWind(sf::Vector2f* wind = nullptr) {
     if (attached || !wind) {
       return;
