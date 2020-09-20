@@ -58,7 +58,7 @@ int main()
 	sf::Color bgColor;
 	float color[3] = { 0.f, 0.f, 0.f };
 	float wind = 0.01;
-	float gravity = 1.0;
+	float gravity = 0.02;
 	bool showSun = false;
 
 
@@ -115,7 +115,7 @@ int main()
 
 		ImGui::Begin("Properties"); // begin window
 
-		ImGui::SetWindowSize(ImVec2(350.0, 150.0));
+		ImGui::SetWindowSize(ImVec2(350.0, 180.0));
 		// Background color edit
 		if (ImGui::ColorEdit3("Background", color)) {
 			// this code gets called if color value changes, so
@@ -126,8 +126,14 @@ int main()
 		}
 		
 		ImGui::SliderFloat("Wind", &wind, -0.5f, 0.5f, "%.4f");
-		ImGui::SliderFloat("Gravity", &gravity, 0.001f, 20.0f, "%.4f");
+		ImGui::SliderFloat("Gravity", &gravity, 0.001f, 1.0f, "%.4f");
 		ImGui::Checkbox("Show Sun", &showSun);
+		if (ImGui::Button("Drop Leaves")) {
+			branch.dropLeaves();
+		}
+		if (ImGui::Button("Attach Leaves")) {
+			branch.reset();
+		}
 		ImGui::End(); // end window
 
 
