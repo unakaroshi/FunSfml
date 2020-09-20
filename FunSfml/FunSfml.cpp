@@ -56,24 +56,24 @@ int main()
 	
 	
 	sf::Color bgColor;
-	float color[3] = { 0.f, 0.f, 0.f };
-	float wind = 0.01;
-	float gravity = 0.02;
-	bool showSun = false;
+	float color[3] = { 0.0f, 0.0f, 0.0f };
+	float wind { 0.01f };
+	float gravity{ 0.02f };
+	bool showSun{ false };
 
 
-	Planet sun(40, 0, 0, modes[0].width / 2, modes[0].height / 2);
-	Planet mercury(5, randomNumber.getNumber(0.0, 360.0), 20);
-	Planet venus(8, randomNumber.getNumber(0.0, 360.0), 50);
-	Planet earth(8, randomNumber.getNumber(0.0, 360.0), 110);
-	Planet moon(3, randomNumber.getNumber(0.0, 360.0), 10);
+	Planet sun(40.0f, 0.0f, 0.0f, modes[0].width / 2.0f, modes[0].height / 2.0f);
+	Planet mercury(5.0f, randomNumber.getNumber(0.0f, 360.0f), 20.0f);
+	Planet venus(8.0f, randomNumber.getNumber(0.0f, 360.0f), 50.0f);
+	Planet earth(8.0f, randomNumber.getNumber(0.0f, 360.0f), 110.0f);
+	Planet moon(3.0f, randomNumber.getNumber(0.0f, 360.0f), 10.0f);
 
 	earth.addPlanet(moon);
 	sun.addPlanet(mercury);
 	sun.addPlanet(venus);
 	sun.addPlanet(earth);
 
-	sf::Vector2f s(randomNumber.getNumber(2.0, 4.0), randomNumber.getNumber(2.0, 4.0));
+	sf::Vector2f s(randomNumber.getNumber(2.0f, 4.0f), randomNumber.getNumber(2.0f, 4.0f));
 
 
 
@@ -115,7 +115,7 @@ int main()
 
 		ImGui::Begin("Properties"); // begin window
 
-		ImGui::SetWindowSize(ImVec2(350.0, 180.0));
+		ImGui::SetWindowSize(ImVec2(350.0f, 180.0f));
 		// Background color edit
 		if (ImGui::ColorEdit3("Background", color)) {
 			// this code gets called if color value changes, so
@@ -142,10 +142,11 @@ int main()
 	
 		sun.update(deltaTime);
 
-		velocity_sun.x += s.x * deltaTime.asSeconds() * 300.0;
-		velocity_sun.y += s.y * deltaTime.asSeconds() * 300.0;
+		velocity_sun.x += s.x * deltaTime.asSeconds() * 300.0f;
+		velocity_sun.y += s.y * deltaTime.asSeconds() * 300.0f;
 
-		sf::Vector2f pos(std::sinf(M_2_PI * (velocity_sun.x / 360.0)) * 900, std::sinf(M_2_PI * (velocity_sun.y / 360.0)) * 500);
+		sf::Vector2f pos(std::sinf(static_cast<float>(M_2_PI) * (velocity_sun.x / 360.0f)) * 900.0f, 
+			             std::sinf(static_cast<float>(M_2_PI) * (velocity_sun.y / 360.0f)) * 500.0f);
 
 
 		

@@ -14,12 +14,12 @@ private:
   bool m_movingHome = false;
   bool m_attached = true;
 
-  float m_mass{ 1.0 };
-  float m_bottom{ 1000.0 };
-  float m_bottomFriction{ 0.8 };
+  float m_mass{ 1.0f };
+  float m_bottom{ 1000.0f };
+  float m_bottomFriction{ 0.8f };
 
 public:
-  Particle(const sf::Vector2f& pos = { 0,0 }, float r = 6) {
+  Particle(const sf::Vector2f& pos = { 0.0f,0.0f }, float r = 6.0f) {
     setHomePosition(pos);
     m_shape.setPosition(pos);
     m_shape.setRadius(r);
@@ -105,7 +105,7 @@ public:
   void updateNormal() {
     if (!m_attached) {
       m_velocity = m_velocity + m_acceleration;
-      m_velocity.x *= 0.9;
+      m_velocity.x *= 0.9f;
       if (isAtBottom()) {
         m_velocity.x = m_velocity.x * m_bottomFriction;
       }

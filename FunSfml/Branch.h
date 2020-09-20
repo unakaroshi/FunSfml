@@ -15,7 +15,7 @@ private:
   sf::Vertex vertex;
   std::vector<Branch*> branches;
   int lvl;
-  float angle = M_PI_4/2;
+  float angle{ static_cast<float>(M_PI_4) / 2.0f };
 
   RandomNumberGenerator randomNumber;  
   
@@ -24,7 +24,7 @@ private:
   bool initialized = false;
 
 
-  int maxlevel = 7;
+  int maxlevel = 8;
   
 
 public:
@@ -84,7 +84,7 @@ public:
 
   void incAngle() {
     if (lvl > 0) {
-      angle += 0.01;
+      angle += 0.01f;
     }
     for (auto b : branches) {
       b->incAngle();
@@ -93,7 +93,7 @@ public:
 
   void decAngle() {
     if (lvl > 0) {
-      angle -= 0.01;			
+      angle -= 0.01f;			
     }
     for (auto b : branches) {
       b->decAngle();

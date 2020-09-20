@@ -7,7 +7,7 @@ private:
   float m_speed = 100.0;
   float m_rot = 0;
   float m_angle{ 0.0 };
-  int m_distance{ 0 };
+  float m_distance{ 0.0 };
 
 
   sf::Vector2f m_position;
@@ -17,7 +17,7 @@ private:
 
 
 public:
-  Planet(int size, float angle, int distance, int x = 0, int y = 0)
+  Planet(float size, float angle, float distance, float x = 0, float y = 0)
     : m_angle(angle), m_distance(distance) {
 
     m_position.x = x;
@@ -38,7 +38,7 @@ public:
 
   void update(sf::Time dt) {
     m_angle += m_speed * dt.asSeconds();
-    m_angle = std::fmod(m_angle, 360.0);
+    m_angle = std::fmod(m_angle, 360.0f);
     for (auto& planet : m_planets) {
       planet.update(dt);
     }
